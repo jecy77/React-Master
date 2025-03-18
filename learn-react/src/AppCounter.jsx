@@ -3,7 +3,6 @@ import Header from './components/Header'
 import Main from './components/Main'
 import Footer from './components/Footer'
 import './App.css'
-import CourseListCard from './components/course/CourseListCard'
 
 
 
@@ -12,16 +11,13 @@ import CourseListCard from './components/course/CourseListCard'
 
 
 function App() {
-  
+  const [count, setCount] = useState(0)
 
   return (
     <>
-    <main>
-		<CourseListCard />
-	</main>
-    
-
-
+      <Header />
+      <Main />
+      <Footer />
     </>
   )
 }
