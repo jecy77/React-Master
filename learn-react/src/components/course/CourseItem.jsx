@@ -1,16 +1,51 @@
-export default function CourseItem(props) {
+function HeartIconBtn({isFavorite = false}) {
+	// 1. 기본
+	// if(isFavorite){
+	// 	return(
+	// 		<button className="btn">
+	// 			<img className="icon-heart" src="/img/heart-fill-icon.svg" />
+	// 		</button>
+	// 	)
+	// }
 
-	// const title = '입문자를 위한, HTML&CSS 웹 개발 입문';
-	// const description = '웹 개발에 필요한 기본 지식을 배웁니다.'
-	// const image = './img/htmlcss.png';
-	// const alt = '강의 이미지';
+	// return(
+	// 	<button className="btn">
+	// 		<img className="icon-heart" src="/img/heart-icon.svg" />
+	// 	</button>
+	// )
+	// 아무것도 반환하고싶지 않다면 return null
 
-	const course = {
-		title : '입문자를 위한, HTML&CSS 웹 개발 입문',
-		description : '웹 개발에 필요한 기본 지식을 배웁니다.',
-		image : './img/htmlcss.png',
-		alt : '강의 이미지'
-	}
+	// 2. 삼항연산자
+	// return(
+	// 	<button className="btn">
+	// 		{isFavorite ? (
+	// 			<img className="icon-heart" src="/img/heart-fill-icon.svg" />
+	// 		) : (
+	// 			<img className="icon-heart" src="/img/heart-icon.svg" />
+	// 		)}
+	// 	</button>
+	// )
+
+	// 3. 삼항연산자 - 더 단순화
+	return(
+		<button className="btn">
+			<img className="btn__img" src={isFavorite ? 'img/heart-fill-icon.svg':'/img/heart-icon.svg' } />
+		</button>
+	)
+
+}
+
+function LinkIconBtn({link}) {
+	return (
+		<a className="btn" href={link} target="_blank" rel="noreferrer">
+			<img className="btn__img" src="/img/link-icon.svg" alt="" />
+		</a>
+	)
+}
+
+export default function CourseItem({title, description, thumbnail, isFavorite, link}) {
+
+
 	const isEmpty = false;
 
 	if (isEmpty){
@@ -20,12 +55,18 @@ export default function CourseItem(props) {
 	}
 	return (
 		<article className="course">
-						<img className="course__img" src={course.image} alt={course.alt} />
+						<img className="course__img" src={thumbnail} alt="강의 이미지" />
 						<div className="course__body">
-							<div className="course__title">{course.title}</div>
-							<div className="course__description">{course.description}</div>
+							<div className="course__title">{title}</div>
+							<div className="course__description">{description}</div>
+						</div>
+						<div className="course__icons">
+							<HeartIconBtn isFavorite={isFavorite}></HeartIconBtn>
+								{link && <LinkIconBtn link={link} />}
+
 						</div>
 					</article>
 	);
 }
+
 

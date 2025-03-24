@@ -1,10 +1,8 @@
 export default function Header() {
   return (
-    <head>
-    
-    <title>강의 목록</title>
-    
-</head>
+    <header>
+      <h2>Header</h2>
+    </header>
   )
 }
 
