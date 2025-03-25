@@ -1,4 +1,4 @@
-function HeartIconBtn({isFavorite = false}) {
+function HeartIconBtn({onHeartClick, isFavorite = false}) {
 	// 1. 기본
 	// if(isFavorite){
 	// 	return(
@@ -26,14 +26,19 @@ function HeartIconBtn({isFavorite = false}) {
 	// 	</button>
 	// )
 
+	
+
 	// 3. 삼항연산자 - 더 단순화
 	return(
-		<button className="btn">
+		// <button className="btn" onClick={onHeartClick}>
+		<button className="btn" onClick={(e)=>onHeartClick(e)}>
 			<img className="btn__img" src={isFavorite ? 'img/heart-fill-icon.svg':'/img/heart-icon.svg' } />
 		</button>
 	)
 
 }
+
+
 
 function LinkIconBtn({link}) {
 	return (
@@ -46,6 +51,7 @@ function LinkIconBtn({link}) {
 export default function CourseItem({title, description, thumbnail, isFavorite, link}) {
 
 
+	
 	const isEmpty = false;
 
 	if (isEmpty){
@@ -53,15 +59,24 @@ export default function CourseItem({title, description, thumbnail, isFavorite, l
 			<p>강의가 없습니다.</p>
 		)
 	}
+
+	function handleFavorite(e) {
+		e.stopPropagation(); // 이벤트 전파 방지 
+		alert(isFavorite ? '좋아요' : '모르겠어요');
+	}
+	function handleItemClick(){
+		alert('item clicked');
+		window.open(link, '_blank');
+	}
 	return (
-		<article className="course">
+		<article className="course" onClick={handleItemClick}>
 						<img className="course__img" src={thumbnail} alt="강의 이미지" />
 						<div className="course__body">
 							<div className="course__title">{title}</div>
 							<div className="course__description">{description}</div>
 						</div>
 						<div className="course__icons">
-							<HeartIconBtn isFavorite={isFavorite}></HeartIconBtn>
+							<HeartIconBtn isFavorite={isFavorite} onHeartClick = {handleFavorite}></HeartIconBtn>
 								{link && <LinkIconBtn link={link} />}
 
 						</div>
