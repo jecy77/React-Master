@@ -1,11 +1,11 @@
-import './App.css';
-import TodoList from './components/todo/TodoList';
-import { useImmerReducer } from 'use-immer';
-import {useReducer, useState} from 'react';
-import todoReducer from './reducer/todoReducer';
+import "./App.css";
+import TodoList from "./components/todo/TodoList";
+import { useImmerReducer } from "use-immer";
+import { useReducer, useState } from "react";
+import todoReducer from "./reducer/todoReducer";
 
 function AppTodo(props) {
-  const [todoText, setTodoText] = useState('');
+  const [todoText, setTodoText] = useState("");
 
   // const [todos, setTodos] = useState([
   //   { id: 0, text: 'HTML&CSS 공부하기', done: false},
@@ -18,17 +18,15 @@ function AppTodo(props) {
   // ]);
 
   const [todos, dispatch] = useImmerReducer(todoReducer, [
-    {id: 0, text: "HTML&CSS 공부하기", done: false },
-    {id: 1, text: "자바스크립트 공부하기", done: false },
+    { id: 0, text: "HTML&CSS 공부하기", done: false },
+    { id: 1, text: "자바스크립트 공부하기", done: false },
   ]);
 
-  const [insertAt, setInsertAt] = useState(todos.length -1);
-
-
+  const [insertAt, setInsertAt] = useState(todos.length - 1);
 
   const handleTodoTextChange = (e) => {
     setTodoText(e.target.value);
-  }
+  };
 
   // 1] added
   const handleAddTodo = (e) => {
@@ -39,12 +37,12 @@ function AppTodo(props) {
     // ])
 
     dispatch({
-      type: 'added',
+      type: "added",
       nextId: todos.length,
-      todoText
-    })
-    setTodoText(''); // null, undefined [x]
-  }
+      todoText,
+    });
+    setTodoText(""); // null, undefined [x]
+  };
 
   // 2] added_index
   const handleAddTodoByIndex = () => {
@@ -59,21 +57,19 @@ function AppTodo(props) {
     // setTodos(newTodos);
 
     dispatch({
-      type: 'added_index',
+      type: "added_index",
       insertAt,
       nextId: todos.length,
-      todoText
-    })
-    setTodoText('');
-  }
+      todoText,
+    });
+    setTodoText("");
+  };
 
-  
-  const handleAddTodoOnEnter =(e) =>{
-    if (e.key === 'Enter' && e.nativeEvent.isComposing === false){
+  const handleAddTodoOnEnter = (e) => {
+    if (e.key === "Enter" && e.nativeEvent.isComposing === false) {
       handleAddTodo();
     }
-  }
-
+  };
 
   // 3] deleted
   const handleDeleteTodo = (deleteId) => {
@@ -83,11 +79,11 @@ function AppTodo(props) {
     // );
 
     dispatch({
-      type: 'deleted',
+      type: "deleted",
       insertAt,
-      deleteId
-    })
-  }
+      deleteId,
+    });
+  };
 
   // 4] 'done'
   const handleToggleTodo = (id, done) => {
@@ -100,11 +96,11 @@ function AppTodo(props) {
     // setTodos(nextTodos);
 
     dispatch({
-      type: 'done',
+      type: "done",
       id,
-      done
-    })
-  }
+      done,
+    });
+  };
 
   // 5] 'reverse'
   const handleReverse = () => {
@@ -113,40 +109,42 @@ function AppTodo(props) {
     // nextTodos.reverse();
     // setTodos(nextTodos);
 
-    // 방법2. toReversed API - 새로운 배열 생성 
+    // 방법2. toReversed API - 새로운 배열 생성
     // setTodos(todos.toReversed())
 
     dispatch({
-      type: 'reverse'
-    })
-  }
+      type: "reverse",
+    });
+  };
 
   return (
     <div>
       <h2>할일목록</h2>
       <div>
-        <input 
-        type="text" 
-        value={todoText} 
-        onChange={handleTodoTextChange}
-        onKeyDown={handleAddTodoOnEnter}
+        <input
+          type="text"
+          value={todoText}
+          onChange={handleTodoTextChange}
+          onKeyDown={handleAddTodoOnEnter}
         />
         <button onClick={handleAddTodo}>추가</button>
       </div>
       <div>
         <select value={insertAt} onChange={(e) => setInsertAt(e.target.value)}>
-          {todos.map((item, index)=>(
-            <option key={item.id} value={index}>{index} 번째</option>
+          {todos.map((item, index) => (
+            <option key={item.id} value={index}>
+              {index} 번째
+            </option>
           ))}
         </select>
         <button onClick={handleAddTodoByIndex}>{insertAt} 번째 추가</button>
       </div>
       <div>Preview: {todoText}</div>
       <button onClick={handleReverse}>Reverse</button>
-      <TodoList 
-      todos={todos} 
-      onDeleteTodo = {handleDeleteTodo}
-      onToggleTodo = {handleToggleTodo}
+      <TodoList
+        todos={todos}
+        onDeleteTodo={handleDeleteTodo}
+        onToggleTodo={handleToggleTodo}
       />
     </div>
   );

@@ -1,8 +1,7 @@
 // export default function todoReducer(todos, action) {
-  export default function todoReducer(draft, action) {
-
-  switch(action.type) {
-    case 'added': {
+export default function todoReducer(draft, action) {
+  switch (action.type) {
+    case "added": {
       const { nextId, todoText } = action;
       // return [
       //   ...todos,
@@ -12,7 +11,7 @@
       draft.push({ id: nextId, text: todoText, done: false });
       break;
     }
-    case 'added_index': {
+    case "added_index": {
       const { nextId, todoText, insertAt } = action;
       // return [
       //   // 삽입 지점 이전 항목
@@ -22,17 +21,17 @@
       //   // 삽입 지점 이후 항목
       //   ...todos.slice(insertAt)
       // ]
-      
+
       draft.splice(insertAt, 0, { id: nextId, text: todoText, done: false });
       break;
     }
-    case 'deleted': {
+    case "deleted": {
       const { deleteId } = action;
       // return todos.filter(item => item.id !== deleteId);
 
-      return draft.filter(item => item.id !== deleteId);
+      return draft.filter((item) => item.id !== deleteId);
     }
-    case 'done': {
+    case "done": {
       const { id, done } = action;
       // return todos.map(item => {
       //   if (item.id === id) {
@@ -41,17 +40,17 @@
       //   return item;
       // });
 
-      const target = draft.find(item => item.id === id);
+      const target = draft.find((item) => item.id === id);
       target.done = done;
       break;
     }
-    case 'reverse': {
+    case "reverse": {
       // return todos.toReversed();
 
       return draft.toReversed();
     }
     default: {
-      throw Error('알 수 없는 액션 타입: ' + action.type);
+      throw Error("알 수 없는 액션 타입: " + action.type);
     }
   }
 }
