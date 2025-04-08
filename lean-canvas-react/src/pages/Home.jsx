@@ -29,46 +29,57 @@ import { createCanvas, getCanvases, deleteCanvas } from '../api/canvas';
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 import Button from '../components/Button';
+import useApiRequest from '../hooks/useApiRequest';
 
 function Home() {
   const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState(); // 초기값으로 모든 목록 조회 가능
   const [isGridview, setIsGridView] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isLoadingCreate, setIsLoadingCreate] = useState(false);
+  // const [isLoading, setIsLoading] = useState(true);
+  // const [error, setError] = useState(null);
+  // const [isLoadingCreate, setIsLoadingCreate] = useState(false);
 
-  async function fetchData(params) {
-    // fetch API
-    // const data = await fetch('http://localhost:8000/canvases')
-    //   .then(res => res.json())
-    //   .catch(console.error);
-    // setData(data);
+  // API call
+  const { isLoading, error, execute: fetchData } = useApiRequest(getCanvases);
+  const { isLoading: isLoadingCreate, execute: createNewCanvas } =
+    useApiRequest(createCanvas);
 
-    // axios
-    // const response = await axios.get('http://localhost:8000/canvases');
-    // console.log(response);
+  // async function fetchData(params) {
+  // fetch API
+  // const data = await fetch('http://localhost:8000/canvases')
+  //   .then(res => res.json())
+  //   .catch(console.error);
+  // setData(data);
 
-    try {
-      setIsLoading(true);
-      setError(null); // 에러 상태도 초기화해야함 !
+  // axios
+  // const response = await axios.get('http://localhost:8000/canvases');
+  // console.log(response);
 
-      // 데이터 조회 중
-      await new Promise(resolve => setTimeout(resolve, 2000));
+  //   try {
+  //     setIsLoading(true);
+  //     setError(null); // 에러 상태도 초기화해야함 !
 
-      // axios 모듈화
-      const response = await getCanvases(params);
-      setData(response.data);
-    } catch (err) {
-      setError(err);
-    } finally {
-      setIsLoading(false);
-    }
-  }
+  //     // 데이터 조회 중
+  //     await new Promise(resolve => setTimeout(resolve, 2000));
+
+  //     // axios 모듈화
+  //     const response = await getCanvases(params);
+  //     setData(response.data);
+  //   } catch (err) {
+  //     setError(err);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }
 
   useEffect(() => {
-    fetchData({ title_like: searchText });
-  }, [searchText]);
+    fetchData(
+      { title_like: searchText },
+      {
+        onSuccess: response => setData(response.data),
+      },
+    );
+  }, [searchText, fetchData]);
 
   const handleDeleteItem = async id => {
     // 성능 Bad
@@ -95,16 +106,27 @@ function Home() {
   // );
 
   const handleCreateCanvas = async () => {
-    try {
-      setIsLoadingCreate(true);
-      await new Promise(resolver => setTimeout(resolver, 1000));
-      await createCanvas();
-      fetchData({ title_like: searchText });
-    } catch (err) {
-      alert(err.message);
-    } finally {
-      setIsLoadingCreate(false);
-    }
+    createNewCanvas(null, {
+      onSuccess: () => {
+        fetchData(
+          { title_like: searchText },
+          {
+            onSuccess: response => setData(response.data),
+          },
+        );
+      },
+      onError: err => alert(err.message),
+    });
+    // try {
+    //   setIsLoadingCreate(true);
+    //   await new Promise(resolver => setTimeout(resolver, 1000));
+    //   await createCanvas();
+    //   fetchData({ title_like: searchText });
+    // } catch (err) {
+    //   alert(err.message);
+    // } finally {
+    //   setIsLoadingCreate(false);
+    // }
   };
 
   return (
