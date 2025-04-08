@@ -1,12 +1,6 @@
 import CanvasItem from './CanvasItem';
-
-export default function CanvasList({
-  filteredData,
-  searchText,
-  isGridview,
-  onDeleteItem,
-}) {
-  if (filteredData.length == 0) {
+function CanvasList({ filteredData, searchText, isGridView, onDeleteItem }) {
+  if (filteredData.length === 0) {
     return (
       <div className="text-center py-10">
         <p className="text-xl text-gray-600">
@@ -17,16 +11,15 @@ export default function CanvasList({
   }
   return (
     <div
-      className={`grid gap-6 grid-cols-1 ${isGridview ? 'sm:grid-cols-2 lg:grid-cols-3' : ''}`}
+      className={`grid gap-6 ${isGridView ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}
     >
       {filteredData.map(item => (
         <CanvasItem
           key={item.id}
-          // id={item.id}
-          // title={item.title}
-          // lastModified={item.lastModified}
-          // category={item.category}
-          {...item}
+          id={item.id}
+          title={item.title}
+          lastModified={item.lastModified}
+          category={item.category}
           onDelete={e => {
             e.preventDefault();
             onDeleteItem(item.id);
@@ -36,3 +29,5 @@ export default function CanvasList({
     </div>
   );
 }
+
+export default CanvasList;

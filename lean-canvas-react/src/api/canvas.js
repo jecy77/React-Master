@@ -2,7 +2,6 @@ import { canvases } from './http';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 
-// 목록 조회
 export async function getCanvases(params) {
   const payload = Object.assign(
     {
@@ -15,7 +14,6 @@ export async function getCanvases(params) {
   return data;
 }
 
-// 등록
 export function createCanvas() {
   const newCanvas = {
     title: uuidv4().substring(0, 4) + '_새로운 린 캔버스',
@@ -25,7 +23,6 @@ export function createCanvas() {
   return canvases.post('/', newCanvas);
 }
 
-// 삭제
 export async function deleteCanvas(id) {
   await canvases.delete(`/${id}`);
 }

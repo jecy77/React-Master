@@ -1,13 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
-
-export default function CanvasItem({
-  id,
-  title,
-  lastModified,
-  category,
-  onDelete,
-}) {
+function CanvasItem({ id, title, lastModified, category, onDelete }) {
   return (
     <Link
       className="relative bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105"
@@ -32,3 +25,5 @@ export default function CanvasItem({
     </Link>
   );
 }
+
+export default CanvasItem;
