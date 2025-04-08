@@ -37,7 +37,7 @@ export default function CanvasDetail() {
   };
   return (
     <div>
-      {JSON.stringify(canvas)}
+      {/* {JSON.stringify(canvas)} */}
       {/* CanvasDetail
       <p>id: {id}</p>
       <p>keyword: {searchParams.get('keyword')}</p>
