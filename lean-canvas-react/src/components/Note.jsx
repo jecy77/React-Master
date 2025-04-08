@@ -1,13 +1,15 @@
+import { useEffect, useRef, useState } from 'react';
 import { AiOutlineClose, AiOutlineCheck } from 'react-icons/ai';
-import { useState, useRef, useEffect } from 'react';
+
 const Note = ({
   id,
   content,
-  color: initialColor,
+  color: initalColor,
   onUpdateNote,
   onRemoveNote,
 }) => {
   const [localContent, setLocalContent] = useState(content);
+
   const colorOptions = [
     'bg-yellow-300',
     'bg-pink-300',
@@ -16,8 +18,7 @@ const Note = ({
   ];
 
   const [color, setColor] = useState(() => {
-    if (initialColor) return initialColor;
-    // 0, 1, 2, 3
+    if (initalColor) return initalColor;
     const randomIndex = Math.floor(Math.random() * colorOptions.length);
     return colorOptions[randomIndex];
   });
@@ -25,7 +26,7 @@ const Note = ({
   const [isEditing, setIsEditing] = useState(false);
 
   const textareaRef = useRef(null);
-  // const [content, setContent] = useState('');
+
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -35,13 +36,12 @@ const Note = ({
   }, [content]);
 
   const handleContentChange = () => {
-    // onUpdateNote(id, e.target.value, color);
     onUpdateNote(id, localContent, color);
   };
 
   const handleColorChange = newColor => {
     setColor(newColor);
-    onUpdateNote(id, content, color);
+    onUpdateNote(id, content, newColor);
   };
 
   return (
@@ -79,9 +79,6 @@ const Note = ({
         value={localContent}
         onChange={e => setLocalContent(e.target.value)}
         onBlur={handleContentChange}
-        // value={content}
-        // onChange={handleContentChange}
-        // onChange={e => setContent(e.target.value)}
         className={`w-full h-full bg-transparent resize-none border-none focus:outline-none text-gray-900 overflow-hidden`}
         aria-label="Edit Note"
         placeholder="메모를 작성하세요."

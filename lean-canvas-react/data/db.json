@@ -230,29 +230,19 @@
     },
     {
       "title": "new canvas",
-      "id": 6
-    },
-    {
-      "title": "new canvas",
       "id": 7
-    },
-    {
-      "title": "new canvas",
-      "id": 8
-    },
-    {
-      "title": "new canvas",
-      "id": 9
-    },
-    {
-      "title": "new canvas",
-      "id": 10
     },
     {
       "title": "e776_새로운 린 캔버스",
       "lastModified": "2025-04-08 20:39:22",
       "category": "신규",
       "id": 11
+    },
+    {
+      "title": "842a_새로운 린 캔버스",
+      "lastModified": "2025-04-08 20:51:52",
+      "category": "신규",
+      "id": 12
     }
   ]
 }

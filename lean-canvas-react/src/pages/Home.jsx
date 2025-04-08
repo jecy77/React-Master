@@ -1,139 +1,84 @@
-// import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { createCanvas, deleteCanvas, getCanvases } from '../api/canvas';
 
-// export default function Home() {
-//   return (
-//     <div>
-//       Home Page!
-//       <ul>
-//         <li>
-//           <Link to={'/canvases/1'}>1번 게시글</Link>
-//         </li>
-//         <li>
-//           <Link to={'/canvases/2?keyword=canvas#helloworld'}>2번 게시글</Link>
-//         </li>
-//         <li>
-//           <Link to={'/canvases/3'}>3번 게시글</Link>
-//         </li>
-//       </ul>
-//     </div>
-//   );
-// }
-
-import { useState, useEffect } from 'react';
-// import { Link } from 'react-router-dom';
-// import axios from 'axios';
-import ViewToggle from '../components/ViewToggle';
-import SearchBar from '../components/SearchBar';
 import CanvasList from '../components/CanvasList';
-import { createCanvas, getCanvases, deleteCanvas } from '../api/canvas';
+import SearchBar from '../components/SearchBar';
+import CategoryFilter from '../components/CategoryFilter';
+import ViewToggle from '../components/ViewToggle';
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 import Button from '../components/Button';
-import useApiRequest from '../hooks/useApiRequest';
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 function Home() {
-  const [data, setData] = useState([]);
-  const [searchText, setSearchText] = useState(); // 초기값으로 모든 목록 조회 가능
-  const [isGridview, setIsGridView] = useState(true);
-  // const [isLoading, setIsLoading] = useState(true);
-  // const [error, setError] = useState(null);
-  // const [isLoadingCreate, setIsLoadingCreate] = useState(false);
+  const [filter, setFilter] = useState({
+    searchText: undefined,
+    category: undefined,
+  });
+  const handleFilter = (key, value) =>
+    setFilter({
+      ...filter,
+      [key]: value,
+    });
+  const [isGridView, setIsGridView] = useState(true);
 
-  // API call
-  const { isLoading, error, execute: fetchData } = useApiRequest(getCanvases);
-  const { isLoading: isLoadingCreate, execute: createNewCanvas } =
-    useApiRequest(createCanvas);
+  const queryClient = useQueryClient();
 
-  // async function fetchData(params) {
-  // fetch API
-  // const data = await fetch('http://localhost:8000/canvases')
-  //   .then(res => res.json())
-  //   .catch(console.error);
-  // setData(data);
+  // 1] 데이터 조회
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ['canvases', filter.searchText, filter.category],
+    queryFn: () => {
+      console.log('fetching data');
+      return getCanvases({
+        title_like: filter.searchText,
+        category: filter.category,
+      });
+    },
+    // initialData: [],
+    staleTime: 1000 * 60 * 5, //5분 동안 데이터가 신선함(fresh) 상태로 유지
+    refetchOnWindowFocus: false,
+  });
 
-  // axios
-  // const response = await axios.get('http://localhost:8000/canvases');
-  // console.log(response);
+  // 2] 등록
+  const { mutate: createNewCanvas, isLoading: isLoadingCreate } = useMutation({
+    mutationFn: createCanvas,
+    onSuccess: () => queryClient.invalidateQueries(['canvases']),
+    onError: err => alert(err.message),
+  });
 
-  //   try {
-  //     setIsLoading(true);
-  //     setError(null); // 에러 상태도 초기화해야함 !
-
-  //     // 데이터 조회 중
-  //     await new Promise(resolve => setTimeout(resolve, 2000));
-
-  //     // axios 모듈화
-  //     const response = await getCanvases(params);
-  //     setData(response.data);
-  //   } catch (err) {
-  //     setError(err);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }
-
-  useEffect(() => {
-    fetchData(
-      { title_like: searchText },
-      {
-        onSuccess: response => setData(response.data),
-      },
-    );
-  }, [searchText, fetchData]);
+  // 3] 삭제
+  const { mutate: deleteCanvasMutation } = useMutation({
+    mutationFn: deleteCanvas,
+    onSuccess: () => queryClient.invalidateQueries(['canvases']),
+    onError: err => alert(err.message),
+  });
 
   const handleDeleteItem = async id => {
-    // 성능 Bad
-    // setData(data.filter(item => item.id !== id));
-
-    // if문 중첩을 막기 위한 구조
-    if (confirm('삭제 하시겠습니까?') === false) {
-      return;
-    }
-
-    // delete logic
-    try {
-      await deleteCanvas(id);
-      fetchData({ title_like: searchText });
-    } catch (err) {
-      alert(err.message);
-    }
+    // if (confirm('삭제 하시겠습니까?') === false) {
+    //   return;
+    // }
+    deleteCanvasMutation(id);
   };
 
-  // 성능 Bad
-  // const filteredData = data.filter(item =>
-  //   // debugger;
-  //   item.title.toLowerCase().includes(searchText.toLowerCase()),
-  // );
-
   const handleCreateCanvas = async () => {
-    createNewCanvas(null, {
-      onSuccess: () => {
-        fetchData(
-          { title_like: searchText },
-          {
-            onSuccess: response => setData(response.data),
-          },
-        );
-      },
-      onError: err => alert(err.message),
-    });
-    // try {
-    //   setIsLoadingCreate(true);
-    //   await new Promise(resolver => setTimeout(resolver, 1000));
-    //   await createCanvas();
-    //   fetchData({ title_like: searchText });
-    // } catch (err) {
-    //   alert(err.message);
-    // } finally {
-    //   setIsLoadingCreate(false);
-    // }
+    createNewCanvas();
   };
 
   return (
     <>
       <div className="mb-6 flex flex-col sm:flex-row items-center justify-between">
-        <SearchBar searchText={searchText} setSearchText={setSearchText} />
-        <ViewToggle isGridview={isGridview} setIsGridView={setIsGridView} />
+        <div className="flex gap-2 flex-col w-full sm:flex-row mb-4 sm:mb-0">
+          <SearchBar
+            searchText={filter.searchText}
+            onSearch={val => handleFilter('searchText', val)}
+          />
+          <CategoryFilter
+            category={filter.category}
+            onChange={val => handleFilter('category', val)}
+          />
+        </div>
+        <ViewToggle isGridView={isGridView} setIsGridView={setIsGridView} />
       </div>
       <div className="flex justify-end mb-6">
         <Button onClick={handleCreateCanvas} loading={isLoadingCreate}>
@@ -141,18 +86,12 @@ function Home() {
         </Button>
       </div>
       {isLoading && <Loading />}
-      {error && (
-        <Error
-          message={error.message}
-          onRetry={() => fetchData({ title_like: searchText })}
-        />
-      )}
+      {error && <Error message={error.message} onRetry={refetch} />}
       {!isLoading && !error && (
         <CanvasList
-          // filteredData={filteredData}
           filteredData={data}
-          isGridview={isGridview}
-          searchText={searchText}
+          isGridView={isGridView}
+          searchText={filter.searchText}
           onDeleteItem={handleDeleteItem}
         />
       )}
