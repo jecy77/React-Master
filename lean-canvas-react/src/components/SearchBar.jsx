@@ -1,5 +1,7 @@
 import { FaSearch } from 'react-icons/fa';
-export default function SearchBar({ searchText, setSearchText }) {
+export default function SearchBar({ searchText = '', setSearchText }) {
+  // searchText에 ''를 전달하지 않으면 undefined가 되어 콘솔 warning
+
   return (
     <div className="relative w-full sm:w-64 mb-4 sm:mb-0">
       <input

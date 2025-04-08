@@ -1,21 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaCheck, FaEdit } from 'react-icons/fa';
 
-function CanvasTitle() {
-  const [title, setTitle] = useState('Lean Canvas');
-  const [editedTitle, setEditedTitle] = useState(title);
-  const [isEditing, setIsEditing] = useState(false);
-  const handleEditTitle = () => {
-    setIsEditing(true);
-  };
+function CanvasTitle({ value, onChange }) {
+  const [title, setTitle] = useState(value);
 
-  const handleTitleChange = e => {
-    setEditedTitle(e.target.value);
-  };
+  // value 동기화를 위해 useEffect 사용
+  useEffect(() => {
+    setTitle(value);
+  }, [value]);
+
+  // const [editedTitle, setEditedTitle] = useState(title);
+  const [isEditing, setIsEditing] = useState(false);
+  // const handleEditTitle = () => {
+  //   setIsEditing(true);
+  // };
+
+  // const handleTitleChange = e => {
+  //   setEditedTitle(e.target.value);
+  // };
 
   const handleTitleSubmit = () => {
-    setTitle(editedTitle);
+    // setTitle(editedTitle);
     setIsEditing(false);
+    onChange(title);
   };
   return (
     <div className="flex items-center justify-center mb-10">
@@ -23,8 +30,10 @@ function CanvasTitle() {
         <div className="flex items-center">
           <input
             type="text"
-            value={editedTitle}
-            onChange={handleTitleChange}
+            // value={editedTitle}
+            // onChange={handleTitleChange}
+            value={title}
+            onChange={e => setTitle(e.target.value)}
             className="text-4xl font-bold text-center text-blue-600 bg-transparent border-b-2 border-blue-600 focus:outline-none"
           />
           <button
@@ -40,7 +49,7 @@ function CanvasTitle() {
       )}
       {!isEditing && (
         <button
-          onClick={handleEditTitle}
+          onClick={() => setIsEditing(true)}
           className="ml-2 p-2 bg-yellow-500 text-white rounded-full hover:bg-yellow-600 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
           aria-label="Edit title"
         >
