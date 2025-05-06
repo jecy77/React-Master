@@ -11,6 +11,6 @@ import App from './AppTodo.jsx'
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <AppTodo />
+    <App />
   </React.StrictMode>,
 );
