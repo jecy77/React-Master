@@ -7,7 +7,7 @@ import App from './AppTodo.jsx'
 // import App from './AppMovingDot'
 // import App from './AppCourse'
 // import App from "./AppTheme";
-import "./index.css";
+// import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
